@@ -12,19 +12,19 @@
             margin: 0;
             padding: 20px;
             text-align: center;
-            color: black; /* Default text color for readability */
+            color: black;
         }
         .container {
-            max-width: 900px; /* Slightly reduced width */
+            max-width: 900px;
             margin: 0 auto;
-            background: white; /* Solid white background */
+            background: white;
             border-radius: 10px;
-            padding: 30px; /* Reduced padding */
+            padding: 30px;
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
             position: relative;
         }
         .title {
-            font-size: 44px; /* Reduced font size */
+            font-size: 44px;
             font-weight: bold;
             margin-bottom: 25px;
             color: black;
@@ -34,21 +34,21 @@
             justify-content: space-between;
             align-items: center;
             color: black;
-            font-size: 32px; /* Reduced font size */
+            font-size: 32px;
         }
         .binary-row {
             display: flex;
             justify-content: center;
-            margin: 15px 0; /* Reduced margin */
+            margin: 15px 0;
         }
         .binary-row div {
-            width: 60px; /* Reduced width */
-            height: 60px; /* Reduced height */
-            line-height: 60px; /* Matches height for centring */
+            width: 60px;
+            height: 60px;
+            line-height: 60px;
             border: 2px solid #000;
-            margin: 5px; /* Reduced margin */
+            margin: 5px;
             text-align: center;
-            font-size: 28px; /* Reduced font size */
+            font-size: 28px;
             background: #FFFDD0;
             color: black;
         }
@@ -59,13 +59,20 @@
         .answer div:hover {
             background: #f0f0f0;
         }
+        .line {
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: black;
+            margin: 10px 0;
+        }
         .buttons {
-            margin-top: 25px; /* Reduced margin */
+            margin-top: 25px;
         }
         button {
-            padding: 15px 30px; /* Reduced padding */
-            font-size: 24px; /* Reduced font size */
-            margin: 10px; /* Reduced margin */
+            padding: 15px 30px;
+            font-size: 24px;
+            margin: 10px;
             cursor: pointer;
             border: none;
             border-radius: 5px;
@@ -83,8 +90,8 @@
             cursor: not-allowed;
         }
         .feedback {
-            margin-top: 25px; /* Reduced margin */
-            font-size: 28px; /* Reduced font size */
+            margin-top: 25px;
+            font-size: 28px;
             font-weight: bold;
             color: black;
         }
@@ -99,7 +106,7 @@
             display: none;
         }
         .credit {
-            font-size: 18px; /* Reduced font size */
+            font-size: 18px;
             font-style: italic;
             margin-top: 15px;
             text-align: right;
@@ -117,6 +124,7 @@
         </div>
         <div class="binary-row" id="binary1"></div>
         <div class="binary-row" id="binary2"></div>
+        <div id="line"></div>
         <div class="binary-row answer" id="answer"></div>
         <div class="buttons">
             <button class="submit" onclick="submitAnswer()">Submit</button>
