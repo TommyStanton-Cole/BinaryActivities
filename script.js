@@ -113,12 +113,26 @@ function passQuestion() {
     if (passes > 0) {
         passes--;
         updatePassButton();
-        document.getElementById("feedback").innerText = "Question passed!";
-        setTimeout(generateProblem, 3000);
+
+        // Show feedback and start a countdown
+        let countdown = 3;
+        document.getElementById("feedback").innerText = `Next question in ${countdown}...`;
+
+        const countdownInterval = setInterval(() => {
+            countdown--;
+            if (countdown > 0) {
+                document.getElementById("feedback").innerText = `Next question in ${countdown}...`;
+            } else {
+                clearInterval(countdownInterval);
+                generateProblem(); // Move to the next question
+                document.getElementById("feedback").innerText = ""; // Clear feedback
+            }
+        }, 1000);
     } else {
         document.getElementById("feedback").innerText = "No passes left!";
     }
 }
+
 
 // Update pass button
 function updatePassButton() {
