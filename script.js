@@ -2,7 +2,7 @@ let score = 0;
 let passes = 3;
 let startTime = Date.now();
 let num1, num2, correctAnswer;
-let lastIncorrectSoundTime = 0; // Track the last time incorrect sound played
+let lastIncorrectSoundTime = 0;
 
 // Preload sounds
 const correctSound = new Audio('success.wav');
@@ -18,7 +18,6 @@ function updateTimer() {
     const seconds = (elapsedTime % 60).toString().padStart(2, "0");
     document.getElementById("timer").innerText = `Time: ${minutes}:${seconds}`;
 
-    // Add a pass every 2 minutes
     if (elapsedTime % 120 === 0 && elapsedTime > 0) {
         passes += 1;
         updatePassButton();
@@ -27,17 +26,29 @@ function updateTimer() {
     requestAnimationFrame(updateTimer);
 }
 
-// Generate random binary numbers
+// Generate binary problem
 function generateProblem() {
     num1 = Math.floor(Math.random() * 256);
     num2 = Math.floor(Math.random() * 256);
     correctAnswer = num1 + num2;
 
-    document.getElementById("binary1").innerHTML = [...num1.toString(2).padStart(9, "0")].map(bit => `<div>${bit}</div>`).join("");
-    document.getElementById("binary2").innerHTML = [...num2.toString(2).padStart(9, "0")].map(bit => `<div>${bit}</div>`).join("");
-    document.getElementById("answer").innerHTML = Array(9).fill("<div>0</div>").join("");
+    const binary1 = num1.toString(2).padStart(9, "0");
+    const binary2 = num2.toString(2).padStart(9, "0");
 
-    // Reset feedback and answer styles
+    document.getElementById("binary1").innerHTML = binary1
+        .split("")
+        .map(bit => `<div>${bit}</div>`)
+        .join("");
+
+    document.getElementById("binary2").innerHTML = 
+        `<div style="font-weight: bold; font-size: 28px; margin-right: 10px;">+</div>` + 
+        binary2
+        .split("")
+        .map(bit => `<div>${bit}</div>`)
+        .join("");
+
+    document.getElementById("line").innerHTML = `<div class="line">─────────</div>`;
+    document.getElementById("answer").innerHTML = Array(9).fill("<div>0</div>").join("");
     document.getElementById("feedback").innerText = "";
 }
 
@@ -57,15 +68,15 @@ function submitAnswer() {
         score++;
         document.getElementById("score").innerText = `Score: ${score}`;
         document.getElementById("feedback").innerText = "Well done!";
-        correctSound.currentTime = 0; // Ensure the sound starts from the beginning
-        correctSound.play(); // Play success sound
+        correctSound.currentTime = 0;
+        correctSound.play();
         flashGreen();
         generateProblem();
     } else {
         score--;
         document.getElementById("score").innerText = `Score: ${score}`;
         document.getElementById("feedback").innerText = "Incorrect!";
-        playIncorrectSound(); // Play incorrect sound
+        playIncorrectSound();
         highlightMistakes(studentAnswer);
     }
 }
@@ -73,8 +84,8 @@ function submitAnswer() {
 // Play incorrect sound with cooldown
 function playIncorrectSound() {
     const now = Date.now();
-    if (now - lastIncorrectSoundTime > 10000) { // 10 seconds cooldown
-        incorrectSound.currentTime = 0; // Ensure the sound starts from the beginning
+    if (now - lastIncorrectSoundTime > 10000) {
+        incorrectSound.currentTime = 0;
         incorrectSound.play();
         lastIncorrectSoundTime = now;
     }
@@ -86,11 +97,7 @@ function highlightMistakes(studentAnswer) {
     const answerDivs = document.getElementById("answer").children;
 
     for (let i = 0; i < correctBinary.length; i++) {
-        if (studentAnswer[i] !== correctBinary[i]) {
-            answerDivs[i].style.backgroundColor = "red";
-        } else {
-            answerDivs[i].style.backgroundColor = "white";
-        }
+        answerDivs[i].style.backgroundColor = studentAnswer[i] !== correctBinary[i] ? "red" : "white";
     }
 }
 
