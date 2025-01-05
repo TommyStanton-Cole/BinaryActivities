@@ -101,12 +101,20 @@ function playIncorrectSound() {
 // Highlight mistakes
 function highlightMistakes(studentAnswer) {
     const correctBinary = correctAnswer.toString(2).padStart(9, "0");
+    const studentAnswerPadded = studentAnswer.padStart(9, "0");
     const answerDivs = document.getElementById("answer").children;
 
     for (let i = 0; i < correctBinary.length; i++) {
-        answerDivs[i].style.backgroundColor = studentAnswer[i] !== correctBinary[i] ? "red" : "white";
+        if (studentAnswerPadded[i] !== correctBinary[i]) {
+            answerDivs[i].classList.add("red");
+            answerDivs[i].classList.remove("white");
+        } else {
+            answerDivs[i].classList.add("white");
+            answerDivs[i].classList.remove("red");
+        }
     }
 }
+
 
 // Pass question
 const PASS_DELAY_SECONDS = 5; // Change this to adjust the delay duration
