@@ -3,6 +3,10 @@ let passes = 3;
 let startTime = Date.now();
 let num1, num2, correctAnswer;
 
+// Preload the sound
+const correctSound = new Audio('success.wav');
+correctSound.preload = 'auto';
+
 // Timer update
 function updateTimer() {
     const elapsedTime = Math.floor((Date.now() - startTime) / 1000);
@@ -49,7 +53,8 @@ function submitAnswer() {
         score++;
         document.getElementById("score").innerText = `Score: ${score}`;
         document.getElementById("feedback").innerText = "Well done!";
-        playSound('success.wav'); // Play the success sound
+        correctSound.currentTime = 0; // Ensure the sound starts from the beginning
+        correctSound.play(); // Play preloaded sound
         flashGreen();
         generateProblem();
     } else {
@@ -97,12 +102,6 @@ function updatePassButton() {
         passButton.classList.remove("disabled");
         passButton.disabled = false;
     }
-}
-
-// Play sound
-function playSound(url) {
-    const audio = new Audio(url);
-    audio.play();
 }
 
 // Flash green for correct answer
