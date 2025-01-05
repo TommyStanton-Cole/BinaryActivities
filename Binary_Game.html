@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Binary Addition Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: url('bg.WEBP') no-repeat center center fixed;
+            background-size: cover;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+            color: black; /* Default text color for readability */
+        }
+        .container {
+            max-width: 900px; /* Slightly reduced width */
+            margin: 0 auto;
+            background: white; /* Solid white background */
+            border-radius: 10px;
+            padding: 30px; /* Reduced padding */
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        .title {
+            font-size: 44px; /* Reduced font size */
+            font-weight: bold;
+            margin-bottom: 25px;
+            color: black;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: black;
+            font-size: 32px; /* Reduced font size */
+        }
+        .binary-row {
+            display: flex;
+            justify-content: center;
+            margin: 15px 0; /* Reduced margin */
+        }
+        .binary-row div {
+            width: 60px; /* Reduced width */
+            height: 60px; /* Reduced height */
+            line-height: 60px; /* Matches height for centring */
+            border: 2px solid #000;
+            margin: 5px; /* Reduced margin */
+            text-align: center;
+            font-size: 28px; /* Reduced font size */
+            background: #FFFDD0;
+            color: black;
+        }
+        .answer div {
+            background: white;
+            cursor: pointer;
+        }
+        .answer div:hover {
+            background: #f0f0f0;
+        }
+        .buttons {
+            margin-top: 25px; /* Reduced margin */
+        }
+        button {
+            padding: 15px 30px; /* Reduced padding */
+            font-size: 24px; /* Reduced font size */
+            margin: 10px; /* Reduced margin */
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+        }
+        .submit {
+            background: #32CD32;
+            color: white;
+        }
+        .pass {
+            background: #FFA500;
+            color: white;
+        }
+        .disabled {
+            background: #D3D3D3;
+            cursor: not-allowed;
+        }
+        .feedback {
+            margin-top: 25px; /* Reduced margin */
+            font-size: 28px; /* Reduced font size */
+            font-weight: bold;
+            color: black;
+        }
+        .flash {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 255, 0, 0.5);
+            z-index: 999;
+            display: none;
+        }
+        .credit {
+            font-size: 18px; /* Reduced font size */
+            font-style: italic;
+            margin-top: 15px;
+            text-align: right;
+            color: gray;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="flash" id="flash"></div>
+        <div class="title">Binary Addition Game</div>
+        <div class="header">
+            <div id="score">Score: 0</div>
+            <div id="timer">Time: 00:00</div>
+        </div>
+        <div class="binary-row" id="binary1"></div>
+        <div class="binary-row" id="binary2"></div>
+        <div class="binary-row answer" id="answer"></div>
+        <div class="buttons">
+            <button class="submit" onclick="submitAnswer()">Submit</button>
+            <button class="pass" id="passButton" onclick="passQuestion()">Pass (3)</button>
+        </div>
+        <div class="feedback" id="feedback"></div>
+        <div class="credit">Mr Stanton-Cole</div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
