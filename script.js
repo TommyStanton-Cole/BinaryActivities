@@ -2,7 +2,6 @@ let score = 0;
 let passes = 3;
 let startTime = Date.now();
 let num1, num2, correctAnswer;
-let lastIncorrectSoundTime = 0;
 
 // Preload sounds
 const correctSound = new Audio('success.wav');
@@ -32,27 +31,35 @@ function generateProblem() {
     num2 = Math.floor(Math.random() * 256);
     correctAnswer = num1 + num2;
 
-    const binary1 = num1.toString(2).padStart(9, "0");
-    const binary2 = num2.toString(2).padStart(9, "0");
+    const binary1 = num1.toString(2).padStart(8, "0"); // Top line: 8 bits
+    const binary2 = num2.toString(2).padStart(8, "0"); // Second line: 8 bits
+    const binaryAnswer = correctAnswer.toString(2).padStart(9, "0"); // Bottom line: 9 bits
 
-    document.getElementById("binary1").innerHTML = binary1
-        .split("")
-        .map(bit => `<div>${bit}</div>`)
-        .join("");
+    // Top line with alignment
+    document.getElementById("binary1").innerHTML = 
+        `<div class="spacer"></div>` + 
+        binary1.split("").map(bit => `<div>${bit}</div>`).join("");
 
+    // Second line with the "+" aligned above the 9th bit
     document.getElementById("binary2").innerHTML = 
-        `<div style="font-weight: bold; font-size: 28px; margin-right: 10px;">+</div>` + 
-        binary2
+        `<div class="plus">+</div>` + 
+        binary2.split("").map(bit => `<div>${bit}</div>`).join("");
+
+    // Underline spanning the entire length of the bottom line
+    document.getElementById("line").innerHTML = 
+        `<div class="underline">${'─'.repeat(binaryAnswer.length * 3)}</div>`;
+
+    // Bottom line (answer line) with 9 bits
+    document.getElementById("answer").innerHTML = binaryAnswer
         .split("")
-        .map(bit => `<div>${bit}</div>`)
+        .map(() => `<div>0</div>`) // Start with 0 for answer bits
         .join("");
 
-    document.getElementById("line").innerHTML = `<div class="line">─────────</div>`;
-    document.getElementById("answer").innerHTML = Array(9).fill("<div>0</div>").join("");
+    // Reset feedback and styles
     document.getElementById("feedback").innerText = "";
 }
 
-// Toggle bits
+// Toggle bits in the answer
 document.getElementById("answer").addEventListener("click", (e) => {
     if (e.target.tagName === "DIV") {
         e.target.innerText = e.target.innerText === "0" ? "1" : "0";
