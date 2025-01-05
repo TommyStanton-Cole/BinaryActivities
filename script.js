@@ -109,13 +109,18 @@ function highlightMistakes(studentAnswer) {
 }
 
 // Pass question
+const PASS_DELAY_SECONDS = 5; // Change this to adjust the delay duration
+
 function passQuestion() {
     if (passes > 0) {
         passes--;
         updatePassButton();
 
-        // Show feedback and start a countdown
-        let countdown = 3;
+        // Disable the Pass and Submit buttons
+        document.getElementById("passButton").disabled = true;
+        document.getElementById("submitButton").disabled = true;
+
+        let countdown = PASS_DELAY_SECONDS; // Use the variable here
         document.getElementById("feedback").innerText = `Next question in ${countdown}...`;
 
         const countdownInterval = setInterval(() => {
@@ -124,7 +129,12 @@ function passQuestion() {
                 document.getElementById("feedback").innerText = `Next question in ${countdown}...`;
             } else {
                 clearInterval(countdownInterval);
-                generateProblem(); // Move to the next question
+                generateProblem(); // Load the next question
+
+                // Re-enable the buttons
+                document.getElementById("passButton").disabled = passes > 0 ? false : true;
+                document.getElementById("submitButton").disabled = false;
+
                 document.getElementById("feedback").innerText = ""; // Clear feedback
             }
         }, 1000);
@@ -132,6 +142,7 @@ function passQuestion() {
         document.getElementById("feedback").innerText = "No passes left!";
     }
 }
+
 
 
 // Update pass button
