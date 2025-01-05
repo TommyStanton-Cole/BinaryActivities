@@ -59,21 +59,22 @@
         .answer div:hover {
             background: #f0f0f0;
         }
-        /* Transparent box */
+        /* Transparent box: overrides the general rule */
         .transparent {
-            background: transparent;
-            border: none;
+            background: none !important;
+            border: none !important;
             width: 60px;
             height: 60px;
         }
-        /* Plus box with black "+" */
+        /* Plus box: overrides the general rule */
         .plus-box {
             text-align: center;
             font-weight: bold;
             font-size: 28px;
             line-height: 60px; /* Center the "+" vertically */
-            background: transparent;
-            border: none;
+            background: none !important;
+            border: none !important;
+            color: black !important;
             width: 60px;
             height: 60px;
         }
