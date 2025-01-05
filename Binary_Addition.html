@@ -88,6 +88,12 @@
             margin: 10px 0;
             letter-spacing: 2px;
         }
+        .answer div.red {
+            background: red !important;
+        }
+        .answer div.white {
+            background: white !important;
+        }
         .buttons {
             margin-top: 25px;
         }
@@ -149,7 +155,7 @@
         <div id="line"></div>
         <div class="binary-row answer" id="answer"></div>
         <div class="buttons">
-            <button class="submit" onclick="submitAnswer()">Submit</button>
+            <button class="submit" id="submitButton" onclick="submitAnswer()">Submit</button>
             <button class="pass" id="passButton" onclick="passQuestion()">Pass (3)</button>
         </div>
         <div class="feedback" id="feedback"></div>
