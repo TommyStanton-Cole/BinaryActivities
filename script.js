@@ -2,10 +2,14 @@ let score = 0;
 let passes = 3;
 let startTime = Date.now();
 let num1, num2, correctAnswer;
+let lastIncorrectSoundTime = 0; // Track the last time incorrect sound played
 
-// Preload the sound
+// Preload sounds
 const correctSound = new Audio('success.wav');
 correctSound.preload = 'auto';
+
+const incorrectSound = new Audio('incorrect.wav');
+incorrectSound.preload = 'auto';
 
 // Timer update
 function updateTimer() {
@@ -54,14 +58,25 @@ function submitAnswer() {
         document.getElementById("score").innerText = `Score: ${score}`;
         document.getElementById("feedback").innerText = "Well done!";
         correctSound.currentTime = 0; // Ensure the sound starts from the beginning
-        correctSound.play(); // Play preloaded sound
+        correctSound.play(); // Play success sound
         flashGreen();
         generateProblem();
     } else {
         score--;
         document.getElementById("score").innerText = `Score: ${score}`;
         document.getElementById("feedback").innerText = "Incorrect!";
+        playIncorrectSound(); // Play incorrect sound
         highlightMistakes(studentAnswer);
+    }
+}
+
+// Play incorrect sound with cooldown
+function playIncorrectSound() {
+    const now = Date.now();
+    if (now - lastIncorrectSoundTime > 10000) { // 10 seconds cooldown
+        incorrectSound.currentTime = 0; // Ensure the sound starts from the beginning
+        incorrectSound.play();
+        lastIncorrectSoundTime = now;
     }
 }
 
