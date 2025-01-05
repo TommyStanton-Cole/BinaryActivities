@@ -35,24 +35,24 @@ function generateProblem() {
     const binary2 = num2.toString(2).padStart(8, "0"); // Second line: 8 bits
     const binaryAnswer = correctAnswer.toString(2).padStart(9, "0"); // Bottom line: 9 bits
 
-    // Top line with alignment
+    // Top line with a transparent box
     document.getElementById("binary1").innerHTML = 
-        `<div class="spacer"></div>` + 
+        `<div class="transparent"></div>` + 
         binary1.split("").map(bit => `<div>${bit}</div>`).join("");
 
-    // Second line with the "+" aligned above the 9th bit
+    // Second line with a "+" in the first box
     document.getElementById("binary2").innerHTML = 
-        `<div class="plus">+</div>` + 
+        `<div class="plus-box">+</div>` + 
         binary2.split("").map(bit => `<div>${bit}</div>`).join("");
 
-    // Underline spanning the entire length of the bottom line
+    // Underline spanning the entire bottom line
     document.getElementById("line").innerHTML = 
         `<div class="underline">${'─'.repeat(binaryAnswer.length * 3)}</div>`;
 
     // Bottom line (answer line) with 9 bits
     document.getElementById("answer").innerHTML = binaryAnswer
         .split("")
-        .map(() => `<div>0</div>`) // Start with 0 for answer bits
+        .map(() => `<div>0</div>`)
         .join("");
 
     // Reset feedback and styles
