@@ -49,7 +49,7 @@ function submitAnswer() {
         score++;
         document.getElementById("score").innerText = `Score: ${score}`;
         document.getElementById("feedback").innerText = "Well done!";
-        playSound('https://www.soundjay.com/button/beep-07.wav');
+        playSound('success.wav'); // Play the success sound
         flashGreen();
         generateProblem();
     } else {
