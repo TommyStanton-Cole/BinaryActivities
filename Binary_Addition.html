@@ -1,2 +1,166 @@
-<meta http-equiv="refresh" content="0; url=index.html" />
-<p><a href="index.html">Redirect</a></p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" type="image/x-icon" href="icon.ico">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Binary Addition Activity</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: url('bg.WEBP') no-repeat center center fixed;
+            background-size: cover;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+            color: black;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        .title {
+            font-size: 44px;
+            font-weight: bold;
+            margin-bottom: 25px;
+            color: black;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: black;
+            font-size: 32px;
+        }
+        .binary-row {
+            display: flex;
+            justify-content: center;
+            margin: 15px 0;
+        }
+        .binary-row div {
+            width: 60px;
+            height: 60px;
+            line-height: 60px;
+            border: 2px solid #000;
+            margin: 5px;
+            text-align: center;
+            font-size: 28px;
+            background: #FFFDD0;
+            color: black;
+        }
+        .answer div {
+            background: white;
+            cursor: pointer;
+        }
+        .answer div:hover {
+            background: #f0f0f0;
+        }
+        /* Transparent box: overrides the general rule */
+        .transparent {
+            background: none !important;
+            border: none !important;
+            width: 60px;
+            height: 60px;
+        }
+        /* Plus box: overrides the general rule */
+        .plus-box {
+            text-align: center;
+            font-weight: bold;
+            font-size: 28px;
+            line-height: 60px; /* Center the "+" vertically */
+            background: none !important;
+            border: none !important;
+            color: black !important;
+            width: 60px;
+            height: 60px;
+        }
+        /* Underline */
+        .underline {
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: black;
+            margin: 10px 0;
+            letter-spacing: 2px;
+        }
+        .answer div.red {
+            background: red !important;
+        }
+        .answer div.white {
+            background: white !important;
+        }
+        .buttons {
+            margin-top: 25px;
+        }
+        button {
+            padding: 15px 30px;
+            font-size: 24px;
+            margin: 10px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+        }
+        .submit {
+            background: #32CD32;
+            color: white;
+        }
+        .pass {
+            background: #FFA500;
+            color: white;
+        }
+        .disabled {
+            background: #D3D3D3;
+            cursor: not-allowed;
+        }
+        .feedback {
+            margin-top: 25px;
+            font-size: 28px;
+            font-weight: bold;
+            color: black;
+        }
+        .flash {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 255, 0, 0.5);
+            z-index: 999;
+            display: none;
+        }
+        .credit {
+            font-size: 18px;
+            font-style: italic;
+            margin-top: 15px;
+            text-align: right;
+            color: gray;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="flash" id="flash"></div>
+        <div class="title">Binary Addition Activity</div>
+        <div class="header">
+            <div id="score">Score: 0</div>
+            <div id="timer">Time: 00:00</div>
+        </div>
+        <div class="binary-row" id="binary1"></div>
+        <div class="binary-row" id="binary2"></div>
+        <div id="line"></div>
+        <div class="binary-row answer" id="answer"></div>
+        <div class="buttons">
+            <button class="submit" id="submitButton" onclick="submitAnswer()">Submit</button>
+            <button class="pass" id="passButton" onclick="passQuestion()">Pass (3)</button>
+        </div>
+        <div class="feedback" id="feedback"></div>
+        <div class="credit">Mr Stanton-Cole</div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
