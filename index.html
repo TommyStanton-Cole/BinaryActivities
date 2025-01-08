@@ -4,7 +4,7 @@
     <link rel="icon" type="image/x-icon" href="icon.ico">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Binary Addition Activity</title>
+    <title>Activity Menu</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -21,7 +21,7 @@
             background: white;
             border-radius: 10px;
             padding: 30px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            box10px rgba(0, 0, 0, 0.1);
             position: relative;
         }
         .title {
@@ -30,108 +30,27 @@
             margin-bottom: 25px;
             color: black;
         }
-        .header {
+        .menu-list {
+            margin-top: 30px;
             display: flex;
-            justify-content: space-between;
+            flex-direction: column;
             align-items: center;
-            color: black;
-            font-size: 32px;
         }
-        .binary-row {
-            display: flex;
-            justify-content: center;
-            margin: 15px 0;
+        .menu-item {
+            margin: 20px 0;
         }
-        .binary-row div {
-            width: 60px;
-            height: 60px;
-            line-height: 60px;
-            border: 2px solid #000;
-            margin: 5px;
-            text-align: center;
+        .menu-item a {
+            text-decoration: none;
             font-size: 28px;
-            background: #FFFDD0;
-            color: black;
-        }
-        .answer div {
-            background: white;
-            cursor: pointer;
-        }
-        .answer div:hover {
-            background: #f0f0f0;
-        }
-        /* Transparent box: overrides the general rule */
-        .transparent {
-            background: none !important;
-            border: none !important;
-            width: 60px;
-            height: 60px;
-        }
-        /* Plus box: overrides the general rule */
-        .plus-box {
-            text-align: center;
-            font-weight: bold;
-            font-size: 28px;
-            line-height: 60px; /* Center the "+" vertically */
-            background: none !important;
-            border: none !important;
-            color: black !important;
-            width: 60px;
-            height: 60px;
-        }
-        /* Underline */
-        .underline {
-            text-align: center;
-            font-size: 24px;
-            font-weight: bold;
-            color: black;
-            margin: 10px 0;
-            letter-spacing: 2px;
-        }
-        .answer div.red {
-            background: red !important;
-        }
-        .answer div.white {
-            background: white !important;
-        }
-        .buttons {
-            margin-top: 25px;
-        }
-        button {
-            padding: 15px 30px;
-            font-size: 24px;
-            margin: 10px;
-            cursor: pointer;
-            border: none;
+            color: #32CD32;
+            border: 2px solid #32CD32;
+            padding: 10px 20px;
             border-radius: 5px;
+            transition: all 0.3s ease;
         }
-        .submit {
-            background: #32CD32;
+        .menu-item a:hover {
+            background-color: #32CD32;
             color: white;
-        }
-        .pass {
-            background: #FFA500;
-            color: white;
-        }
-        .disabled {
-            background: #D3D3D3;
-            cursor: not-allowed;
-        }
-        .feedback {
-            margin-top: 25px;
-            font-size: 28px;
-            font-weight: bold;
-            color: black;
-        }
-        .flash {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 255, 0, 0.5);
-            z-index: 999;
-            display: none;
         }
         .credit {
             font-size: 18px;
@@ -139,28 +58,42 @@
             margin-top: 15px;
             text-align: right;
             color: gray;
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+        }
+        .home-button {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+        }
+        .home-button img {
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="flash" id="flash"></div>
-        <div class="title">Binary Addition Activity</div>
-        <div class="header">
-            <div id="score">Score: 0</div>
-            <div id="timer">Time: 00:00</div>
+        <div class="home-button">
+            <a href="index.html">
+                <img src="home.png" alt="Home">
+            </a>
         </div>
-        <div class="binary-row" id="binary1"></div>
-        <div class="binary-row" id="binary2"></div>
-        <div id="line"></div>
-        <div class="binary-row answer" id="answer"></div>
-        <div class="buttons">
-            <button class="submit" id="submitButton" onclick="submitAnswer()">Submit</button>
-            <button class="pass" id="passButton" onclick="passQuestion()">Pass (3)</button>
+        <div class="title">Activity Menu</div>
+        <div class="menu-list">
+            <div class="menu-item">
+                <a href="BinaryAddition.html">Binary Addition</a>
+            </div>
+            <div class="menu-item">
+                <a href="DenaryToBinary.html">Denary to Binary</a>
+            </div>
+            <div class="menu-item">
+                <a href="BinaryToDenary.html">Binary to Denary</a>
+            </div>
         </div>
-        <div class="feedback" id="feedback"></div>
-        <div class="credit">Mr Stanton-Cole</div>
+        <div class=" Stanton-Cole</div>
     </div>
-    <script src="script.js"></script>
 </body>
 </html>
