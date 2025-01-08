@@ -1,3 +1,4 @@
+// Global variables
 let score = 0;
 let passes = 3;
 let startTime = Date.now();
@@ -44,11 +45,11 @@ function generateProblem() {
         binary2.split("").map(bit => `<div>${bit}</div>`).join("");
 
     document.getElementById("line").innerHTML =
-        `<div class="underline">${'─'.repeat(binaryAnswer.length * 3)}</div>`;
+        `<div class="underline" data-static="true">${'─'.repeat(binaryAnswer.length * 3)}</div>`;
 
     document.getElementById("answer").innerHTML = binaryAnswer
         .split("")
-        .map(() => `<div>0</div>`)
+        .map(() => `<div class="answer_bits">0</div>`)
         .join("");
 
     document.getElementById("feedback").innerText = "";
@@ -56,7 +57,8 @@ function generateProblem() {
 
 // Toggle bits in the answer
 document.getElementById("answer").addEventListener("click", (e) => {
-    if (e.target.tagName === "DIV") {
+    if (e.target.classList.contains("answer_bits")) {
+        e.stopPropagation(); // Prevent event bubbling
         e.target.innerText = e.target.innerText === "0" ? "1" : "0";
     }
 });
