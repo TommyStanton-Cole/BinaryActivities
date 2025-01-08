@@ -4,7 +4,7 @@
     <link rel="icon" type="image/x-icon" href="icon.ico">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Denary to Binary Conversion Activity</title>
+    <title>Binary to Denary Conversion Activity</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -21,7 +21,7 @@
             background: white;
             border-radius: 10px;
             padding: 30px;
-            box-shadow: (0, 0, 0, 0.1);
+            box-shadow: 0px 0px 10px rgba(0, 0.1);
             position: relative;
         }
         .title {
@@ -53,13 +53,6 @@
             background: #FFFDD0;
             color: black;
         }
-        .answer div {
-            background: white;
-            cursor: pointer;
-        }
-        .answer div:hover {
-            background: #f0f0f0;
-        }
         .feedback {
             margin-top: 25px;
             font-size: 28px;
@@ -81,20 +74,6 @@
             background: #32CD32;
             color: white;
         }
-        .hint {
-            background: #FFA500;
-            color: white;
-        }
-        .home-button {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-        }
-        .home-button img {
-            width: 50px;
-            height: 50px;
-            cursor: pointer;
-        }
         .flash {
             position: absolute;
             top: 0;
@@ -104,40 +83,63 @@
             background-color: rgba(0, 255, 0, 0.5);
             z-index: 999;
             display: none;
-       18px;
+        }
+        .credit {
+            font-size: 18px;
             font-style: italic;
-            margin-top: 15px;
             text-align: right;
             color: gray;
             position: absolute;
             bottom: 10px;
             right: 10px;
         }
+        input[type="text"] {
+            font-size: 28px;
+            padding:px solid #000;
+            border-radius: 5px;
+        }
+        .home-button {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+        }
+        .home-button img {
+            width: 50px;
+            height: auto;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
-    <div class="home-button">
-        <a href="index.html">
-            <img src="home.png" alt="Home">
-        </a>
-    </div>
     <div class="container">
+        <!-- Home Button -->
+        <div class="home-button">
+            <a href="index.html">
+                <img src="home.png" alt="Home">
+            </a>
+        </div>
         <div class="flash" id="flash"></div>
-        <div class="title">Denary to Binary Conversion Activity</div>
+        <div class="title">Binary to Denary Conversion Activity</div>
         <div class="header">
             <div id="score">Score: 0</div>
             <div id="timer">Time: 00:00</div>
         </div>
+        <!-- Helper Row -->
         <div class="binary-row" id="helperRow"></div>
-        <div id="denaryNumber" style="font-size: 32px; margin: 20px 0;">Denary: 0</div>
-        <div class="binary-row answer" id="answer"></div>
+        <!-- Binary Question -->
+        <div class="binary-row" id="binaryRow"></div>
+        <!-- Denary Input -->
+        <div id="denaryInput" style="margin: 20px 0;">
+            <input type="text" id="denaryAnswer" placeholder="Enter Denary Answer" />
+        </div>
+        <!-- Buttons -->
         <div class="buttons">
             <button class="submit" id="submitButton" onclick="submitAnswer()">Submit</button>
-            <button class="hint" id="hintButton" onclick="updateHelperTotal()">Hint</button>
         </div>
+        <!-- Feedback Section -->
         <div class="feedback" id="feedback"></div>
         <div class="credit">Mr Stanton-Cole</div>
     </div>
-    <script src="DenaryToBinary.js"></script>
+    <script src="BinaryToDenary.js"></script>
 </body>
 </html>
