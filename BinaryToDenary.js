@@ -2,6 +2,9 @@
 let score = 0;
 let startTime = Date.now();
 let binaryNumber, correctDenary;
+let hintActive = false;
+let hints = 5;
+let lastHintAwardTime = startTime; // Track last hint award time
 
 // Preload sounds
 const correctSound = new Audio('success.wav');
@@ -16,6 +19,20 @@ function updateTimer() {
     const seconds = (elapsedTime % 60).toString().padStart(2, "0");
     document.getElementById("timer").innerText = `Time: ${minutes}:${seconds}`;
     setTimeout(updateTimer, 1000); // Update every second
+
+    // Award a hint every minute
+    if (elapsedTime - Math.floor((lastHintAwardTime - startTime) / 1000) >= 60) {
+        hints++;
+        lastHintAwardTime = Date.now();
+	updateHintButton();
+    }
+
+}
+
+// Update hint button
+function updateHintButton() {
+    const hintButton = document.getElementById("hintButton");
+    hintButton.innerText = `Hint (${hints})`;
 }
 
 // Generate binary problem
@@ -31,11 +48,12 @@ function generateProblem() {
 
     // Display the binary number
     document.getElementById("binaryRow").innerHTML =
-        binaryNumber.split("").map(bit => `<div>${bit}</div>`).join("");
+        binaryNumber.split("").map(bit => `<div class="binary-bit">${bit}</div>`).join("");
 
     // Reset input field and feedback
     document.getElementById("feedback").innerText = "";
     document.getElementById("denaryAnswer").value = ""; // Reset input field
+    hintActive = false; // Reset hint state
 }
 
 // Submit answer
@@ -45,15 +63,56 @@ function submitAnswer() {
     if (studentAnswer === correctDenary) {
         score++;
         document.getElementById("score").innerText = `Score: ${score}`;
-        correctSound.currentTime = 0;      
-  	correctSound.play();
-	flashFeedback("green");
+        correctSound.currentTime = 0;
+        correctSound.play();
+        flashFeedback("green");
         generateProblem();
     } else {
         incorrectSound.currentTime = 0;
         incorrectSound.play();
         flashFeedback("red");
     }
+}
+
+// Hint button functionality
+function hint_button() {
+    hintActive = true; // Enable hint mode
+    hints--;
+    updateHintButton();
+    updateHints(); // Highlight boxes initially
+}
+
+// Update hints dynamically as user types
+function updateHints() {
+    if (hintActive) {
+        const studentAnswer = parseInt(document.getElementById("denaryAnswer").value, 10);
+
+        // Skip highlighting for invalid input
+        if (isNaN(studentAnswer)) {
+            clearHints();
+            return;
+        }
+
+        const binaryFromAnswer = studentAnswer.toString(2).padStart(8, "0");
+        const binaryBits = document.querySelectorAll(".binary-bit");
+
+        binaryBits.forEach((bit, index) => {
+            // Highlight boxes in orange where the binary is `1`
+            if (binaryFromAnswer[index] === "1") {
+                bit.style.backgroundColor = "orange";
+            } else {
+                bit.style.backgroundColor = ""; // Reset others
+            }
+        });
+    }
+}
+
+// Clear hint highlights
+function clearHints() {
+    const binaryBits = document.querySelectorAll(".binary-bit");
+    binaryBits.forEach(bit => {
+        bit.style.backgroundColor = "";
+    });
 }
 
 // Flash feedback
@@ -70,6 +129,7 @@ function flashFeedback(color) {
 function startGame() {
     generateProblem();
     updateTimer();
+    updateHintButton();
 
     // Add an event listener for the Enter key
     document.getElementById("denaryAnswer").addEventListener("keypress", (e) => {
@@ -77,8 +137,14 @@ function startGame() {
             submitAnswer();
         }
     });
-}
 
+    // Add an event listener for input updates when hints are active
+    document.getElementById("denaryAnswer").addEventListener("input", () => {
+        if (hintActive) {
+            updateHints();
+        }
+    });
+}
 
 // Wait for DOM content to load before starting the game
 document.addEventListener("DOMContentLoaded", startGame);

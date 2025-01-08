@@ -103,6 +103,10 @@
             top: 10px;
             left: 10px;
         }
+        .hint {
+            background: #FFA500;
+            color: white;
+        }
         .home-button img {
             width: 50px;
             height: auto;
@@ -133,9 +137,10 @@
             <input type="text" id="denaryAnswer" placeholder="Enter Denary Answer" />
         </div>
         <!-- Buttons -->
-        <div class="buttons">
-            <button class="submit" id="submitButton" onclick="submitAnswer()">Submit</button>
-        </div>
+	<div class="buttons">
+    		<button class="submit" id="submitButton" onclick="submitAnswer()">Submit</button>
+    		<button class="hint" id="hintButton" onclick="hint_button()">Hint</button>
+	</div>
         <!-- Feedback Section -->
         <div class="feedback" id="feedback"></div>
         <div class="credit">Mr Stanton-Cole</div>
