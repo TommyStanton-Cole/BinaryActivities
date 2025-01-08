@@ -43,7 +43,7 @@ function generateProblem() {
     document.getElementById("denaryNumber").innerText = `Denary: ${denaryNumber}`;
 
     // Populate the answer row
-    const answerRow = Array(8).fill(0).map(() => `<div>0</div>`).join("");
+    const answerRow = Array(8).fill(0).map(() => `<div class="answer_bits">0</div>`).join("");
     document.getElementById("answer").innerHTML = answerRow;
 
     document.getElementById("feedback").innerText = "";
@@ -52,13 +52,20 @@ function generateProblem() {
 
 // Toggle bits in the answer
 document.getElementById("answer").addEventListener("click", (e) => {
-    if (e.target.tagName === "DIV") {
+    if (e.target.classList.contains("answer_bits")) {
         e.target.innerText = e.target.innerText === "0" ? "1" : "0";
         if (hintActive) {
             updateHelperTotal();
         }
     }
 });
+
+// Hint button pressed
+
+function hint_button() {
+    hints--;
+    updateHelperTotal();
+}
 
 // Update the helper total
 function updateHelperTotal() {
@@ -68,7 +75,6 @@ function updateHelperTotal() {
         const total = bits.reduce((sum, bit, index) => sum + bit * helperRow[index], 0);
         document.getElementById("feedback").innerText = `Current Total: ${total}`;
         hintActive = true; // Hint is now active
-        hints--;
         updateHintButton();
     } else {
         document.getElementById("feedback").innerText = "No hints left!";
@@ -129,27 +135,4 @@ function flashGreen() {
 // Start game
 generateProblem();
 updateTimer();
-
-// Generate denary problem
-function generateProblem() {
-    denaryNumber = Math.floor(Math.random() * 256);
-    correctBinary = denaryNumber.toString(2).padStart(8, "0");
-
-    // Create the helper row
-    const helperRow = [128, 64, 32, 16, 8, 4, 2, 1];
-    document.getElementById("helperRow").innerHTML =
-        helperRow.map(num => `<div>${num}</div>`).join("");
-
-    // Display the denary number
-    document.getElementById("denaryNumber").innerText = `Denary: ${denaryNumber}`;
-
-    // Populate the answer row
-    const answerRow = Array(8).fill(0).map(() => `<div>0</div>`).join("");
-    document.getElementById("answer").innerHTML = answerRow;
-
-    document.getElementById("feedback").innerText = "";
-    hintActive = false; // Reset hint state
-
-    // Initialize hint button
-    updateHintButton();
-}
+hintButton.innerText = `Hint (${hints})`;
