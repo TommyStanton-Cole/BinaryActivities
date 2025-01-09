@@ -64,6 +64,7 @@ document.getElementById("answer").addEventListener("click", (e) => {
 
 function hint_button() {
     hints--;
+    updateHintButton();
     updateHelperTotal();
 }
 
