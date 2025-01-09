@@ -73,8 +73,8 @@ function updateHelperTotal() {
     if (hints > 0) {
         const bits = [...document.getElementById("answer").children].map(div => parseInt(div.innerText));
         const helperRow = [128, 64, 32, 16, 8, 4, 2, 1];
-        const total = bits.reduce((sum, bit, index) => sum + bit * helperRow[index], 0);
-        document.getElementById("feedback").innerText = `Current Total: ${total}`;
+        const remainder = denaryNumber - bits.reduce((sum, bit, index) => sum + bit * helperRow[index], 0);
+        document.getElementById("feedback").innerText = `Current Remainder: ${remainder}`;
         hintActive = true; // Hint is now active
         updateHintButton();
     } else {
