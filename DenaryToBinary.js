@@ -50,8 +50,10 @@ function generateProblem() {
     document.getElementById("feedback").innerText = "";
     hintActive = false; // Reset hint state
 
+    // Re-enable hint button if hints > 0
+    const hintButton = document.getElementById("hintButton");
     if (hints > 0) {
-        document.getElementById("hintButton").disabled = false; // Re-enable hint button
+        hintButton.disabled = false;
     }
 }
 
@@ -66,11 +68,14 @@ document.getElementById("answer").addEventListener("click", (e) => {
 });
 
 // Hint button pressed
+
 function hint_button() {
     hints--;
     updateHintButton();
     updateHelperTotal();
-    document.getElementById("hintButton").disabled = true; // Disable hint button after press
+
+    // Disable hint button after use
+    document.getElementById("hintButton").disabled = true;
 }
 
 // Update the helper total
@@ -97,29 +102,28 @@ function updateHintButton() {
 // Submit answer
 function submitAnswer() {
     const studentAnswer = [...document.getElementById("answer").children].map(div => div.innerText).join("");
-    const submitButton = document.getElementById("submitButton");
 
     if (studentAnswer === correctBinary) {
         score++;
+     
+        if (hintActive === false) {
+          score++;
+          score++;
+        }
+        
         document.getElementById("score").innerText = `Score: ${score}`;
         document.getElementById("feedback").innerText = "Well done!";
         correctSound.currentTime = 0;
         correctSound.play();
         flashGreen();
         generateProblem();
-        submitButton.disabled = false; // Re-enable submit button
     } else {
         score--;
         document.getElementById("score").innerText = `Score: ${score}`;
-        document.getElementById("feedback").innerText = "Incorrect! You can try again in 10 seconds.";
+        document.getElementById("feedback").innerText = "Incorrect!";
         incorrectSound.currentTime = 0;
         incorrectSound.play();
         setTimeout(() => highlightMistakes(studentAnswer), 0);
-        submitButton.disabled = true; // Disable submit button
-        setTimeout(() => {
-            submitButton.disabled = false; // Re-enable after penalty
-            document.getElementById("feedback").innerText = "You can try again now."; // Update feedback
-        }, 10000); // 10-second penalty
     }
 }
 
@@ -148,3 +152,4 @@ function flashGreen() {
 // Start game
 generateProblem();
 updateTimer();
+hintButton.innerText = `Hint (${hints})`;
