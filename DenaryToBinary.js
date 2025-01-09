@@ -1,10 +1,11 @@
 // Global variables
 let score = 0;
-let hints = 5; // Initial number of hints
+let hints = 10; // Initial number of hints
 let startTime = Date.now();
 let denaryNumber, correctBinary;
 let hintActive = false;
 let lastHintAwardTime = startTime; // Track last hint award time
+let hintawards = 5;
 
 // Preload sounds
 const correctSound = new Audio('success.wav');
@@ -21,7 +22,7 @@ function updateTimer() {
 
     // Award a hint every minute
     if (elapsedTime - Math.floor((lastHintAwardTime - startTime) / 1000) >= 60) {
-        hints++;
+        hints = hints + hintawards;
         lastHintAwardTime = Date.now();
         updateHintButton();
     }
