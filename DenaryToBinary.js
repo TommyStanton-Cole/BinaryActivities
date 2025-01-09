@@ -44,7 +44,7 @@ function generateProblem() {
     document.getElementById("denaryNumber").innerText = `Denary: ${denaryNumber}`;
 
     // Populate the answer row
-    const answerRow = Array(8).fill(0).map(() => `<div class=\"answer_bits\">0</div>`).join("");
+    const answerRow = Array(8).fill(0).map(() => `<div class="answer_bits">0</div>`).join("");
     document.getElementById("answer").innerHTML = answerRow;
 
     document.getElementById("feedback").innerText = "";
@@ -52,12 +52,6 @@ function generateProblem() {
 
     if (hints > 0) {
         document.getElementById("hintButton").disabled = false; // Re-enable hint button
-    }
-
-    // Re-enable hint button if hints > 0
-    const hintButton = document.getElementById("hintButton");
-    if (hints > 0) {
-        hintButton.disabled = false;
     }
 }
 
@@ -72,14 +66,11 @@ document.getElementById("answer").addEventListener("click", (e) => {
 });
 
 // Hint button pressed
-
 function hint_button() {
     hints--;
     updateHintButton();
     updateHelperTotal();
     document.getElementById("hintButton").disabled = true; // Disable hint button after press
-    // Disable hint button after use
-    document.getElementById("hintButton").disabled = true;
 }
 
 // Update the helper total
@@ -120,14 +111,15 @@ function submitAnswer() {
     } else {
         score--;
         document.getElementById("score").innerText = `Score: ${score}`;
-        document.getElementById("feedback").innerText = "Incorrect!";
+        document.getElementById("feedback").innerText = "Incorrect! You can try again in 10 seconds.";
         incorrectSound.currentTime = 0;
         incorrectSound.play();
         setTimeout(() => highlightMistakes(studentAnswer), 0);
         submitButton.disabled = true; // Disable submit button
         setTimeout(() => {
             submitButton.disabled = false; // Re-enable after penalty
-        }, 5000); // 5-second penalty
+            document.getElementById("feedback").innerText = "You can try again now."; // Update feedback
+        }, 10000); // 10-second penalty
     }
 }
 
@@ -156,4 +148,3 @@ function flashGreen() {
 // Start game
 generateProblem();
 updateTimer();
-hintButton.innerText = `Hint (${hints})`;
