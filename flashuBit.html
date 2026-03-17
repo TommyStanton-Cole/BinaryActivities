@@ -6,58 +6,39 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>flashuBit - Micro:bit Transfer Tool</title>
     
-    <script src="https://app.enzuzo.com/scripts/cookiebar/fd6b23e2-8668-11f0-9530-379c1d5a0f18"></script>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4187017556041967" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/dapjs@0.3.1/dist/dapjs.bundle.js"></script>
 
     <style>
         body {
             font-family: Arial, sans-serif;
             background: url('bg.WEBP') no-repeat center center fixed;
             background-size: cover;
-            margin: 0;
-            padding: 20px;
-            text-align: center;
-            color: black;
+            margin: 0; padding: 20px; text-align: center;
         }
         .container {
-            max-width: 900px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 10px;
-            padding: 30px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-            position: relative;
-            min-height: 480px;
+            max-width: 900px; margin: 0 auto; background: white;
+            border-radius: 10px; padding: 30px; box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
+            position: relative; min-height: 480px;
         }
-        .title { font-size: 44px; font-weight: bold; margin-bottom: 10px; color: #6f42c1; }
+        .title { font-size: 44px; font-weight: bold; color: #6f42c1; margin-bottom: 10px; }
         .home-button img { width: 50px; height: 50px; cursor: pointer; position: absolute; top: 10px; left: 10px; }
         
-        button {
-            padding: 15px 30px;
-            font-size: 22px;
-            margin: 10px;
-            cursor: pointer;
-            border: none;
-            border-radius: 8px;
-            color: white;
-            font-weight: bold;
+        .btn {
+            padding: 15px 30px; font-size: 22px; margin: 10px;
+            cursor: pointer; border: none; border-radius: 8px;
+            color: white; font-weight: bold; transition: 0.2s;
         }
         #uploadBtn { background: #6c757d; }
         #connectBtn { background: #007bff; }
         #flashBtn { background: #32CD32; display: none; }
         
         #status { 
-            margin-top: 30px; 
-            font-size: 24px; 
-            font-weight: bold; 
-            color: #444; 
-            padding: 15px;
-            border: 2px dashed #ccc;
-            border-radius: 8px;
-            background: #fafafa;
+            margin-top: 30px; font-size: 24px; font-weight: bold; 
+            padding: 20px; border: 3px dashed #6f42c1;
+            border-radius: 8px; background: #f9f0ff; color: #444;
         }
-        
-        .file-ok { background: #d4edda !important; color: #155724 !important; border-color: #c3e6cb !important; }
+        .success { background: #d4edda !important; border-color: #28a745 !important; color: #155724 !important; }
+        .error { background: #f8d7da !important; border-color: #dc3545 !important; color: #721c24 !important; }
         
         progress { width: 90%; height: 25px; margin-top: 20px; display: none; }
         .credit { font-size: 18px; font-style: italic; color: gray; position: absolute; bottom: 10px; right: 10px; }
@@ -72,106 +53,102 @@
 
         <div class="title">flashuBit</div>
 
-        <div class="instruction-text" style="font-size: 18px; margin-bottom: 20px;">
-            Pick your <b>.hex</b>, Pair your <b>Micro:bit</b>, and <b>Flash!</b>
-        </div>
+        <p>Since BitLocker is active, use this tool to send code directly to the hardware.</p>
 
         <input type="file" id="fileInput" accept=".hex" style="display:none;">
 
         <div class="button-group">
-            <button id="uploadBtn" onclick="document.getElementById('fileInput').click()">1. Pick a Hex File</button>
-            <button id="connectBtn">2. Pair Micro:bit</button>
+            <button class="btn" id="uploadBtn" onclick="document.getElementById('fileInput').click()">1. Select .hex File</button>
+            <button class="btn" id="connectBtn">2. Pair Micro:bit</button>
             <br>
-            <button id="flashBtn">⚡ 3. Send to Micro:bit</button>
+            <button class="btn" id="flashBtn">⚡ 3. Send to Micro:bit</button>
         </div>
 
-        <div id="status">Waiting for file...</div>
+        <div id="status">Please select your project file...</div>
         <progress id="progressBar" value="0" max="100"></progress>
 
         <div class="credit">Mr Stanton-Cole</div>
     </div>
 
-    <script type="module">
-        import * as dapjs from 'https://cdn.jsdelivr.net/npm/dapjs@0.3.2/+esm';
+    <script>
+        var device, fileBuffer;
+        var fileInput = document.getElementById('fileInput');
+        var statusBox = document.getElementById('status');
+        var connectBtn = document.getElementById('connectBtn');
+        var flashBtn = document.getElementById('flashBtn');
+        var progressBar = document.getElementById('progressBar');
 
-        // Wait for DOM to be absolutely ready
-        window.addEventListener('load', () => {
-            const fileInput = document.getElementById('fileInput');
-            const connectBtn = document.getElementById('connectBtn');
-            const flashBtn = document.getElementById('flashBtn');
-            const status = document.getElementById('status');
-            const progressBar = document.getElementById('progressBar');
+        // Check if library is present
+        window.onload = function() {
+            if (typeof dapjs === 'undefined') {
+                statusBox.innerText = "Error: System Library missing. Check Internet.";
+                statusBox.className = "error";
+            }
+        };
 
-            let device;
-            let fileBuffer;
+        fileInput.onchange = function(e) {
+            var file = e.target.files[0];
+            if (file) {
+                var reader = new FileReader();
+                reader.onload = function(event) {
+                    fileBuffer = event.target.result;
+                    statusBox.innerHTML = "✅ <b>File Ready:</b> " + file.name;
+                    statusBox.className = "success";
+                };
+                reader.readAsArrayBuffer(file);
+            }
+        };
 
-            // HANDLE FILE PICKING
-            fileInput.onchange = (e) => {
-                const file = e.target.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = (event) => {
-                        fileBuffer = event.target.result;
-                        // Immediate Visual Feedback
-                        status.innerHTML = `✅ <b>File Loaded:</b> ${file.name}`;
-                        status.className = "file-ok"; 
-                        console.log("File loaded successfully");
-                    };
-                    reader.readAsArrayBuffer(file);
-                }
-            };
-
-            // HANDLE PAIRING
-            connectBtn.onclick = async () => {
-                try {
-                    status.innerText = "Opening selector...";
-                    device = await navigator.usb.requestDevice({
-                        filters: [{ vendorId: 0x0d28, productId: 0x0204 }]
-                    });
-
-                    status.innerText = `🔗 Connected: ${device.productName}`;
-                    status.style.color = "#32CD32";
-                    connectBtn.style.display = "none";
-                    flashBtn.style.display = "inline-block";
-                } catch (err) {
-                    status.innerText = "❌ Pairing failed. Did you select the device?";
-                    console.error(err);
-                }
-            };
-
-            // HANDLE FLASHING
-            flashBtn.onclick = async () => {
-                if (!fileBuffer || !device) {
-                    status.innerText = "Missing file or device!";
-                    return;
-                }
-
-                const transport = new dapjs.WebUSB(device);
-                const target = new dapjs.DAPLink(transport);
-
-                target.on(dapjs.DAPLink.EVENT_PROGRESS, (p) => {
-                    progressBar.style.display = "inline-block";
-                    progressBar.value = p * 100;
-                    status.innerText = `Sending... ${Math.round(p * 100)}%`;
+        connectBtn.onclick = async function() {
+            try {
+                statusBox.innerText = "Requesting USB Access...";
+                // Specifically look for the micro:bit hardware IDs
+                device = await navigator.usb.requestDevice({
+                    filters: [{ vendorId: 0x0d28, productId: 0x0204 }]
                 });
 
-                try {
-                    flashBtn.disabled = true;
-                    await target.connect();
-                    await target.flash(fileBuffer);
-                    await target.disconnect();
+                statusBox.innerHTML = "🔗 <b>Hardware Linked:</b> " + device.productName;
+                statusBox.className = "success";
+                connectBtn.style.display = "none";
+                flashBtn.style.display = "inline-block";
+            } catch (err) {
+                statusBox.innerText = "Connection Denied. Ensure no other tabs are using the Micro:bit.";
+                statusBox.className = "error";
+            }
+        };
 
-                    status.innerText = "Flash Successful! 🎉";
-                    status.className = "file-ok";
-                    progressBar.style.display = "none";
-                } catch (err) {
-                    status.innerText = "❌ Error: " + err.message;
-                    console.error(err);
-                } finally {
-                    flashBtn.disabled = false;
-                }
-            };
-        });
+        flashBtn.onclick = async function() {
+            if (!fileBuffer || !device) return;
+
+            // Reset UI for flashing
+            flashBtn.disabled = true;
+            statusBox.innerText = "Initializing Transfer...";
+            progressBar.style.display = "inline-block";
+            progressBar.value = 0;
+
+            try {
+                var transport = new dapjs.WebUSB(device);
+                var target = new dapjs.DAPLink(transport);
+
+                target.on(dapjs.DAPLink.EVENT_PROGRESS, function(p) {
+                    progressBar.value = p * 100;
+                    statusBox.innerText = "Flashing Hardware: " + Math.round(p * 100) + "%";
+                });
+
+                await target.connect();
+                await target.flash(fileBuffer);
+                await target.disconnect();
+
+                statusBox.innerHTML = "Success! Your code is running. 🎉";
+                statusBox.className = "success";
+                progressBar.style.display = "none";
+            } catch (err) {
+                statusBox.innerHTML = "<b>Flash Failed:</b> " + err.message + "<br><small>Unplug and replug the Micro:bit and try again.</small>";
+                statusBox.className = "error";
+            } finally {
+                flashBtn.disabled = false;
+            }
+        };
     </script>
 </body>
 </html>
