@@ -5,10 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>flashuBit - Micro:bit Transfer Tool</title>
+    
     <script src="https://app.enzuzo.com/scripts/cookiebar/fd6b23e2-8668-11f0-9530-379c1d5a0f18"></script>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4187017556041967" crossorigin="anonymous"></script>
-    
-    <script type="module" src="flasher.js"></script>
 
     <style>
         body {
@@ -34,7 +33,7 @@
             font-size: 44px;
             font-weight: bold;
             margin-bottom: 10px;
-            color: #6f42c1; /* Using a nice micro:bit purple for the name */
+            color: #6f42c1;
         }
         .home-button {
             position: absolute;
@@ -46,18 +45,15 @@
             height: 50px;
             cursor: pointer;
         }
-        
         .instruction-text {
             font-size: 20px;
             margin-bottom: 30px;
             line-height: 1.5;
             color: #333;
         }
-
         .button-group {
             margin-top: 25px;
         }
-
         button {
             padding: 15px 30px;
             font-size: 22px;
@@ -69,11 +65,9 @@
             font-weight: bold;
             transition: all 0.2s;
         }
-
         button:active {
             transform: scale(0.96);
         }
-
         #uploadBtn { background: #6c757d; }
         #connectBtn { background: #007bff; }
         #flashBtn { 
@@ -81,16 +75,12 @@
             display: none; 
             box-shadow: 0px 4px 0px #248a24;
         }
-        
-        #flashBtn:hover { background: #2eb82e; }
-
         #status {
             margin-top: 30px;
             font-size: 24px;
             font-weight: bold;
             color: #444;
         }
-
         progress {
             width: 90%;
             height: 25px;
@@ -98,7 +88,6 @@
             display: none;
             accent-color: #32CD32;
         }
-
         .credit {
             font-size: 18px;
             font-style: italic;
@@ -130,7 +119,7 @@
         <input type="file" id="fileInput" accept=".hex" style="display:none;">
 
         <div class="button-group">
-            <button id="uploadBtn">1. Pick a Hex File</button>
+            <button id="uploadBtn" onclick="document.getElementById('fileInput').click()">1. Pick a Hex File</button>
             <button id="connectBtn">2. Pair Micro:bit</button>
             <br>
             <button id="flashBtn">⚡ 3. Send to Micro:bit</button>
@@ -147,5 +136,83 @@
         <a href="tos.html">Terms of Service</a>
     </footer>
 
+    <script type="module">
+        import * as dapjs from 'https://cdn.jsdelivr.net/npm/dapjs@0.3.2/+esm';
+
+        const fileInput = document.getElementById('fileInput');
+        const connectBtn = document.getElementById('connectBtn');
+        const flashBtn = document.getElementById('flashBtn');
+        const status = document.getElementById('status');
+        const progressBar = document.getElementById('progressBar');
+
+        let device;
+        let fileBuffer;
+
+        // Handle file selection
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    fileBuffer = event.target.result;
+                    status.innerText = `File "${file.name}" loaded!`;
+                    status.style.color = "#007bff";
+                };
+                reader.readAsArrayBuffer(file);
+            }
+        });
+
+        // Step 2: Connection
+        connectBtn.addEventListener('click', async () => {
+            try {
+                // Filters for micro:bit vendor and product IDs
+                device = await navigator.usb.requestDevice({
+                    filters: [{ vendorId: 0x0d28, productId: 0x0204 }]
+                });
+
+                status.innerText = `Connected: ${device.productName}`;
+                status.style.color = "#32CD32";
+                connectBtn.style.display = "none";
+                flashBtn.style.display = "inline-block";
+            } catch (err) {
+                status.innerText = "Connection failed. Please use Chrome/Edge.";
+                status.style.color = "red";
+                console.error(err);
+            }
+        });
+
+        // Step 3: Flash
+        flashBtn.addEventListener('click', async () => {
+            if (!fileBuffer) {
+                status.innerText = "Please pick a file first!";
+                return;
+            }
+
+            const transport = new dapjs.WebUSB(device);
+            const target = new dapjs.DAPLink(transport);
+
+            target.on(dapjs.DAPLink.EVENT_PROGRESS, (progress) => {
+                progressBar.style.display = "inline-block";
+                progressBar.value = progress * 100;
+                status.innerText = `Flashing... ${Math.round(progress * 100)}%`;
+            });
+
+            try {
+                flashBtn.disabled = true;
+                await target.connect();
+                await target.flash(fileBuffer);
+                await target.disconnect();
+
+                status.innerText = "Flash Successful! 🎉";
+                status.style.color = "#32CD32";
+                progressBar.style.display = "none";
+            } catch (err) {
+                status.innerText = "Error: " + err.message;
+                status.style.color = "red";
+            } finally {
+                flashBtn.disabled = false;
+            }
+        });
+    </script>
 </body>
 </html>
