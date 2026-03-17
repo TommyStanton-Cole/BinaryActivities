@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" type="image/x-icon" href="icon.ico">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Micro:bit Hex Flasher</title>
+    <script src="https://app.enzuzo.com/scripts/cookiebar/fd6b23e2-8668-11f0-9530-379c1d5a0f18"></script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4187017556041967" crossorigin="anonymous"></script>
+    
+    <script type="module" src="script.js"></script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: url('bg.WEBP') no-repeat center center fixed;
+            background-size: cover;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+            color: black;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+            min-height: 400px;
+        }
+        .title {
+            font-size: 44px;
+            font-weight: bold;
+            margin-bottom: 25px;
+            color: black;
+        }
+        .home-button {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+        }
+        .home-button img {
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
+        }
+        .credit {
+            font-size: 18px;
+            font-style: italic;
+            margin-top: 15px;
+            text-align: right;
+            color: gray;
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+        }
+
+        /* Flashing UI Styles */
+        .flash-interface {
+            margin: 40px 0;
+            padding: 20px;
+            border: 2px solid #eee;
+            border-radius: 8px;
+        }
+        .btn {
+            padding: 15px 30px;
+            font-size: 20px;
+            margin: 10px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            font-weight: bold;
+        }
+        #uploadBtn { background: #6c757d; }
+        #connectBtn { background: #007bff; }
+        #flashBtn { background: #32CD32; display: none; }
+        
+        #status { margin-top: 20px; font-size: 22px; font-weight: bold; }
+        progress { width: 80%; height: 25px; margin-top: 15px; display: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="home-button">
+            <a href="index.html">
+                <img src="home.png" alt="Home">
+            </a>
+        </div>
+        
+        <div class="title">Micro:bit Flasher</div>
+        
+        <div class="flash-interface">
+            <p style="font-size: 20px;">Upload a <b>.hex</b> file to flash it to your micro:bit.</p>
+            
+            <input type="file" id="fileInput" accept=".hex" style="display:none;">
+            
+            <button class="btn" id="uploadBtn">1. Choose Hex File</button>
+            <button class="btn" id="connectBtn">2. Connect Micro:bit</button>
+            <br>
+            <button class="btn" id="flashBtn">⚡ 3. Flash to Device</button>
+
+            <div id="status">Ready</div>
+            <progress id="progressBar" value="0" max="100"></progress>
+        </div>
+
+        <div class="credit">Mr Stanton-Cole</div>
+    </div>
+
+    <footer style="margin-top:40px; font-size:14px; color:gray; text-align:center;">
+        <a href="privacy.html">Privacy Policy</a> |
+        <a href="tos.html">Terms of Service</a>
+    </footer>
+</body>
+</html>
