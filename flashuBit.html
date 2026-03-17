@@ -27,33 +27,12 @@
             padding: 30px;
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
             position: relative;
-            min-height: 450px;
+            min-height: 480px;
         }
-        .title {
-            font-size: 44px;
-            font-weight: bold;
-            margin-bottom: 10px;
-            color: #6f42c1;
-        }
-        .home-button {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-        }
-        .home-button img {
-            width: 50px;
-            height: 50px;
-            cursor: pointer;
-        }
-        .instruction-text {
-            font-size: 20px;
-            margin-bottom: 30px;
-            line-height: 1.5;
-            color: #333;
-        }
-        .button-group {
-            margin-top: 25px;
-        }
+        .title { font-size: 44px; font-weight: bold; margin-bottom: 10px; color: #6f42c1; }
+        .home-button img { width: 50px; height: 50px; cursor: pointer; position: absolute; top: 10px; left: 10px; }
+        .instruction-text { font-size: 20px; margin-bottom: 30px; line-height: 1.5; color: #333; }
+        
         button {
             padding: 15px 30px;
             font-size: 22px;
@@ -65,55 +44,31 @@
             font-weight: bold;
             transition: all 0.2s;
         }
-        button:active {
-            transform: scale(0.96);
-        }
         #uploadBtn { background: #6c757d; }
         #connectBtn { background: #007bff; }
-        #flashBtn { 
-            background: #32CD32; 
-            display: none; 
-            box-shadow: 0px 4px 0px #248a24;
-        }
-        #status {
-            margin-top: 30px;
-            font-size: 24px;
-            font-weight: bold;
-            color: #444;
-        }
-        progress {
-            width: 90%;
-            height: 25px;
-            margin-top: 20px;
-            display: none;
-            accent-color: #32CD32;
-        }
-        .credit {
-            font-size: 18px;
-            font-style: italic;
-            margin-top: 15px;
-            text-align: right;
-            color: gray;
-            position: absolute;
-            bottom: 10px;
-            right: 10px;
-        }
+        #flashBtn { background: #32CD32; display: none; box-shadow: 0px 4px 0px #248a24; }
+        
+        /* Confirmation Styling */
+        #status { margin-top: 30px; font-size: 24px; font-weight: bold; color: #444; border: 2px solid transparent; padding: 10px; border-radius: 8px; }
+        .file-ready { border-color: #007bff !important; background: #e7f3ff; color: #007bff !important; }
+        
+        progress { width: 90%; height: 25px; margin-top: 20px; display: none; accent-color: #32CD32; }
+        .credit { font-size: 18px; font-style: italic; margin-top: 15px; text-align: right; color: gray; position: absolute; bottom: 10px; right: 10px; }
     </style>
 </head>
 <body>
 
     <div class="container">
         <div class="home-button">
-            <a href="index.html">
-                <img src="home.png" alt="Home">
-            </a>
+            <a href="index.html"><img src="home.png" alt="Home"></a>
         </div>
 
         <div class="title">flashuBit</div>
 
         <div class="instruction-text">
-            Easily send your <strong>.hex</strong> code <br> 
-            to your micro:bit using WebUSB.
+            1. Pick your <b>.hex</b> file.<br>
+            2. Connect your Micro:bit via USB.<br> 
+            3. Flash the code!
         </div>
 
         <input type="file" id="fileInput" accept=".hex" style="display:none;">
@@ -125,16 +80,11 @@
             <button id="flashBtn">⚡ 3. Send to Micro:bit</button>
         </div>
 
-        <div id="status">Ready to go</div>
+        <div id="status">Waiting for file...</div>
         <progress id="progressBar" value="0" max="100"></progress>
 
         <div class="credit">Mr Stanton-Cole</div>
     </div>
-
-    <footer style="margin-top:40px; font-size:14px; color:gray; text-align:center;">
-        <a href="privacy.html">Privacy Policy</a> |
-        <a href="tos.html">Terms of Service</a>
-    </footer>
 
     <script type="module">
         import * as dapjs from 'https://cdn.jsdelivr.net/npm/dapjs@0.3.2/+esm';
@@ -148,49 +98,50 @@
         let device;
         let fileBuffer;
 
-        // Handle file selection
+        // VISUAL CONFIRMATION: When file is picked
         fileInput.addEventListener('change', (e) => {
             const file = e.target.files[0];
             if (file) {
                 const reader = new FileReader();
                 reader.onload = (event) => {
                     fileBuffer = event.target.result;
-                    status.innerText = `File "${file.name}" loaded!`;
-                    status.style.color = "#007bff";
+                    status.innerText = `✔️ Ready: ${file.name}`;
+                    status.classList.add('file-ready'); // Turns the box blue
                 };
                 reader.readAsArrayBuffer(file);
             }
         });
 
-        // Step 2: Connection
+        // STEP 2: Connect to hardware
         connectBtn.addEventListener('click', async () => {
             try {
-                // Filters for micro:bit vendor and product IDs
+                status.innerText = "Searching for device...";
                 device = await navigator.usb.requestDevice({
                     filters: [{ vendorId: 0x0d28, productId: 0x0204 }]
                 });
 
-                status.innerText = `Connected: ${device.productName}`;
+                status.innerText = `🔗 Connected to ${device.productName}`;
                 status.style.color = "#32CD32";
                 connectBtn.style.display = "none";
                 flashBtn.style.display = "inline-block";
             } catch (err) {
-                status.innerText = "Connection failed. Please use Chrome/Edge.";
-                status.style.color = "red";
+                status.innerText = "❌ Connection failed. Ensure Micro:bit is plugged in.";
                 console.error(err);
             }
         });
 
-        // Step 3: Flash
+        // STEP 3: Flash to Micro:bit
         flashBtn.addEventListener('click', async () => {
-            if (!fileBuffer) {
-                status.innerText = "Please pick a file first!";
+            if (!fileBuffer || !device) {
+                status.innerText = "Error: File or Device missing.";
                 return;
             }
 
+            // Create the transfer protocol
             const transport = new dapjs.WebUSB(device);
             const target = new dapjs.DAPLink(transport);
 
+            // Progress Bar Logic
             target.on(dapjs.DAPLink.EVENT_PROGRESS, (progress) => {
                 progressBar.style.display = "inline-block";
                 progressBar.value = progress * 100;
@@ -204,11 +155,11 @@
                 await target.disconnect();
 
                 status.innerText = "Flash Successful! 🎉";
-                status.style.color = "#32CD32";
+                status.classList.remove('file-ready');
                 progressBar.style.display = "none";
             } catch (err) {
-                status.innerText = "Error: " + err.message;
-                status.style.color = "red";
+                status.innerText = "❌ Flash Error: " + err.message;
+                console.error(err);
             } finally {
                 flashBtn.disabled = false;
             }
