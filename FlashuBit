@@ -4,11 +4,11 @@
     <link rel="icon" type="image/x-icon" href="icon.ico">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Micro:bit Hex Flasher</title>
+    <title>flashuBit - Micro:bit Transfer Tool</title>
     <script src="https://app.enzuzo.com/scripts/cookiebar/fd6b23e2-8668-11f0-9530-379c1d5a0f18"></script>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4187017556041967" crossorigin="anonymous"></script>
     
-    <script type="module" src="script.js"></script>
+    <script type="module" src="flasher.js"></script>
 
     <style>
         body {
@@ -28,13 +28,13 @@
             padding: 30px;
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
             position: relative;
-            min-height: 400px;
+            min-height: 450px;
         }
         .title {
             font-size: 44px;
             font-weight: bold;
-            margin-bottom: 25px;
-            color: black;
+            margin-bottom: 10px;
+            color: #6f42c1; /* Using a nice micro:bit purple for the name */
         }
         .home-button {
             position: absolute;
@@ -46,6 +46,59 @@
             height: 50px;
             cursor: pointer;
         }
+        
+        .instruction-text {
+            font-size: 20px;
+            margin-bottom: 30px;
+            line-height: 1.5;
+            color: #333;
+        }
+
+        .button-group {
+            margin-top: 25px;
+        }
+
+        button {
+            padding: 15px 30px;
+            font-size: 22px;
+            margin: 10px;
+            cursor: pointer;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+
+        button:active {
+            transform: scale(0.96);
+        }
+
+        #uploadBtn { background: #6c757d; }
+        #connectBtn { background: #007bff; }
+        #flashBtn { 
+            background: #32CD32; 
+            display: none; 
+            box-shadow: 0px 4px 0px #248a24;
+        }
+        
+        #flashBtn:hover { background: #2eb82e; }
+
+        #status {
+            margin-top: 30px;
+            font-size: 24px;
+            font-weight: bold;
+            color: #444;
+        }
+
+        progress {
+            width: 90%;
+            height: 25px;
+            margin-top: 20px;
+            display: none;
+            accent-color: #32CD32;
+        }
+
         .credit {
             font-size: 18px;
             font-style: italic;
@@ -56,55 +109,35 @@
             bottom: 10px;
             right: 10px;
         }
-
-        /* Flashing UI Styles */
-        .flash-interface {
-            margin: 40px 0;
-            padding: 20px;
-            border: 2px solid #eee;
-            border-radius: 8px;
-        }
-        .btn {
-            padding: 15px 30px;
-            font-size: 20px;
-            margin: 10px;
-            cursor: pointer;
-            border: none;
-            border-radius: 5px;
-            color: white;
-            font-weight: bold;
-        }
-        #uploadBtn { background: #6c757d; }
-        #connectBtn { background: #007bff; }
-        #flashBtn { background: #32CD32; display: none; }
-        
-        #status { margin-top: 20px; font-size: 22px; font-weight: bold; }
-        progress { width: 80%; height: 25px; margin-top: 15px; display: none; }
     </style>
 </head>
 <body>
+
     <div class="container">
         <div class="home-button">
             <a href="index.html">
                 <img src="home.png" alt="Home">
             </a>
         </div>
-        
-        <div class="title">Micro:bit Flasher</div>
-        
-        <div class="flash-interface">
-            <p style="font-size: 20px;">Upload a <b>.hex</b> file to flash it to your micro:bit.</p>
-            
-            <input type="file" id="fileInput" accept=".hex" style="display:none;">
-            
-            <button class="btn" id="uploadBtn">1. Choose Hex File</button>
-            <button class="btn" id="connectBtn">2. Connect Micro:bit</button>
-            <br>
-            <button class="btn" id="flashBtn">⚡ 3. Flash to Device</button>
 
-            <div id="status">Ready</div>
-            <progress id="progressBar" value="0" max="100"></progress>
+        <div class="title">flashuBit</div>
+
+        <div class="instruction-text">
+            Easily send your <strong>.hex</strong> code <br> 
+            to your micro:bit using WebUSB.
         </div>
+
+        <input type="file" id="fileInput" accept=".hex" style="display:none;">
+
+        <div class="button-group">
+            <button id="uploadBtn">1. Pick a Hex File</button>
+            <button id="connectBtn">2. Pair Micro:bit</button>
+            <br>
+            <button id="flashBtn">⚡ 3. Send to Micro:bit</button>
+        </div>
+
+        <div id="status">Ready to go</div>
+        <progress id="progressBar" value="0" max="100"></progress>
 
         <div class="credit">Mr Stanton-Cole</div>
     </div>
@@ -113,5 +146,6 @@
         <a href="privacy.html">Privacy Policy</a> |
         <a href="tos.html">Terms of Service</a>
     </footer>
+
 </body>
 </html>
