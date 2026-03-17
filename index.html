@@ -23,7 +23,7 @@
             background: white;
             border-radius: 10px;
             padding: 30px;
-            box10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
             position: relative;
         }
         .title {
@@ -39,30 +39,39 @@
             align-items: center;
         }
         .menu-item {
-            margin: 20px 0;
+            margin: 15px 0;
         }
         .menu-item a {
             text-decoration: none;
             font-size: 28px;
             color: #32CD32;
             border: 2px solid #32CD32;
-            padding: 10px 20px;
+            padding: 10px 40px;
             border-radius: 5px;
+            display: block;
+            width: 300px; /* Kept buttons uniform size */
             transition: all 0.3s ease;
+        }
+        /* Special styling for the flashuBit button to make it stand out */
+        .menu-item .flash-link {
+            color: #6f42c1;
+            border-color: #6f42c1;
         }
         .menu-item a:hover {
             background-color: #32CD32;
             color: white;
         }
+        .menu-item .flash-link:hover {
+            background-color: #6f42c1;
+            border-color: #6f42c1;
+            color: white;
+        }
         .credit {
             font-size: 18px;
             font-style: italic;
-            margin-top: 15px;
+            margin-top: 25px;
             text-align: right;
             color: gray;
-            position: absolute;
-            bottom: 10px;
-            right: 10px;
         }
         .home-button {
             position: absolute;
@@ -83,7 +92,9 @@
                 <img src="home.png" alt="Home">
             </a>
         </div>
+        
         <div class="title">Activity Menu</div>
+        
         <div class="menu-list">
             <div class="menu-item">
                 <a href="BinaryAddition.html">Binary Addition</a>
@@ -94,18 +105,18 @@
             <div class="menu-item">
                 <a href="BinaryToDenary.html">Binary to Denary</a>
             </div>
+            
+            <div class="menu-item">
+                <a href="flashuBit.html" class="flash-link">⚡ flashuBit</a>
+            </div>
         </div>
-        <div class=" Stanton-Cole</div>
-    </div>
-<footer style="margin-top:40px; font-size:14px; color:gray; text-align:center;">
-  <a href="privacy.html">Privacy Policy</a> |
-  <a href="tos.html">Terms of Service</a>
-</footer>
 
+        <div class="credit">Mr Stanton-Cole</div>
+    </div>
+
+    <footer style="margin-top:40px; font-size:14px; color:gray; text-align:center;">
+        <a href="privacy.html">Privacy Policy</a> |
+        <a href="tos.html">Terms of Service</a>
+    </footer>
 </body>
 </html>
-
-
-
-
-
