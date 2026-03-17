@@ -31,7 +31,6 @@
         }
         .title { font-size: 44px; font-weight: bold; margin-bottom: 10px; color: #6f42c1; }
         .home-button img { width: 50px; height: 50px; cursor: pointer; position: absolute; top: 10px; left: 10px; }
-        .instruction-text { font-size: 20px; margin-bottom: 30px; line-height: 1.5; color: #333; }
         
         button {
             padding: 15px 30px;
@@ -42,18 +41,26 @@
             border-radius: 8px;
             color: white;
             font-weight: bold;
-            transition: all 0.2s;
         }
         #uploadBtn { background: #6c757d; }
         #connectBtn { background: #007bff; }
-        #flashBtn { background: #32CD32; display: none; box-shadow: 0px 4px 0px #248a24; }
+        #flashBtn { background: #32CD32; display: none; }
         
-        /* Confirmation Styling */
-        #status { margin-top: 30px; font-size: 24px; font-weight: bold; color: #444; border: 2px solid transparent; padding: 10px; border-radius: 8px; }
-        .file-ready { border-color: #007bff !important; background: #e7f3ff; color: #007bff !important; }
+        #status { 
+            margin-top: 30px; 
+            font-size: 24px; 
+            font-weight: bold; 
+            color: #444; 
+            padding: 15px;
+            border: 2px dashed #ccc;
+            border-radius: 8px;
+            background: #fafafa;
+        }
         
-        progress { width: 90%; height: 25px; margin-top: 20px; display: none; accent-color: #32CD32; }
-        .credit { font-size: 18px; font-style: italic; margin-top: 15px; text-align: right; color: gray; position: absolute; bottom: 10px; right: 10px; }
+        .file-ok { background: #d4edda !important; color: #155724 !important; border-color: #c3e6cb !important; }
+        
+        progress { width: 90%; height: 25px; margin-top: 20px; display: none; }
+        .credit { font-size: 18px; font-style: italic; color: gray; position: absolute; bottom: 10px; right: 10px; }
     </style>
 </head>
 <body>
@@ -65,10 +72,8 @@
 
         <div class="title">flashuBit</div>
 
-        <div class="instruction-text">
-            1. Pick your <b>.hex</b> file.<br>
-            2. Connect your Micro:bit via USB.<br> 
-            3. Flash the code!
+        <div class="instruction-text" style="font-size: 18px; margin-bottom: 20px;">
+            Pick your <b>.hex</b>, Pair your <b>Micro:bit</b>, and <b>Flash!</b>
         </div>
 
         <input type="file" id="fileInput" accept=".hex" style="display:none;">
@@ -89,80 +94,83 @@
     <script type="module">
         import * as dapjs from 'https://cdn.jsdelivr.net/npm/dapjs@0.3.2/+esm';
 
-        const fileInput = document.getElementById('fileInput');
-        const connectBtn = document.getElementById('connectBtn');
-        const flashBtn = document.getElementById('flashBtn');
-        const status = document.getElementById('status');
-        const progressBar = document.getElementById('progressBar');
+        // Wait for DOM to be absolutely ready
+        window.addEventListener('load', () => {
+            const fileInput = document.getElementById('fileInput');
+            const connectBtn = document.getElementById('connectBtn');
+            const flashBtn = document.getElementById('flashBtn');
+            const status = document.getElementById('status');
+            const progressBar = document.getElementById('progressBar');
 
-        let device;
-        let fileBuffer;
+            let device;
+            let fileBuffer;
 
-        // VISUAL CONFIRMATION: When file is picked
-        fileInput.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = (event) => {
-                    fileBuffer = event.target.result;
-                    status.innerText = `✔️ Ready: ${file.name}`;
-                    status.classList.add('file-ready'); // Turns the box blue
-                };
-                reader.readAsArrayBuffer(file);
-            }
-        });
+            // HANDLE FILE PICKING
+            fileInput.onchange = (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                        fileBuffer = event.target.result;
+                        // Immediate Visual Feedback
+                        status.innerHTML = `✅ <b>File Loaded:</b> ${file.name}`;
+                        status.className = "file-ok"; 
+                        console.log("File loaded successfully");
+                    };
+                    reader.readAsArrayBuffer(file);
+                }
+            };
 
-        // STEP 2: Connect to hardware
-        connectBtn.addEventListener('click', async () => {
-            try {
-                status.innerText = "Searching for device...";
-                device = await navigator.usb.requestDevice({
-                    filters: [{ vendorId: 0x0d28, productId: 0x0204 }]
+            // HANDLE PAIRING
+            connectBtn.onclick = async () => {
+                try {
+                    status.innerText = "Opening selector...";
+                    device = await navigator.usb.requestDevice({
+                        filters: [{ vendorId: 0x0d28, productId: 0x0204 }]
+                    });
+
+                    status.innerText = `🔗 Connected: ${device.productName}`;
+                    status.style.color = "#32CD32";
+                    connectBtn.style.display = "none";
+                    flashBtn.style.display = "inline-block";
+                } catch (err) {
+                    status.innerText = "❌ Pairing failed. Did you select the device?";
+                    console.error(err);
+                }
+            };
+
+            // HANDLE FLASHING
+            flashBtn.onclick = async () => {
+                if (!fileBuffer || !device) {
+                    status.innerText = "Missing file or device!";
+                    return;
+                }
+
+                const transport = new dapjs.WebUSB(device);
+                const target = new dapjs.DAPLink(transport);
+
+                target.on(dapjs.DAPLink.EVENT_PROGRESS, (p) => {
+                    progressBar.style.display = "inline-block";
+                    progressBar.value = p * 100;
+                    status.innerText = `Sending... ${Math.round(p * 100)}%`;
                 });
 
-                status.innerText = `🔗 Connected to ${device.productName}`;
-                status.style.color = "#32CD32";
-                connectBtn.style.display = "none";
-                flashBtn.style.display = "inline-block";
-            } catch (err) {
-                status.innerText = "❌ Connection failed. Ensure Micro:bit is plugged in.";
-                console.error(err);
-            }
-        });
+                try {
+                    flashBtn.disabled = true;
+                    await target.connect();
+                    await target.flash(fileBuffer);
+                    await target.disconnect();
 
-        // STEP 3: Flash to Micro:bit
-        flashBtn.addEventListener('click', async () => {
-            if (!fileBuffer || !device) {
-                status.innerText = "Error: File or Device missing.";
-                return;
-            }
-
-            // Create the transfer protocol
-            const transport = new dapjs.WebUSB(device);
-            const target = new dapjs.DAPLink(transport);
-
-            // Progress Bar Logic
-            target.on(dapjs.DAPLink.EVENT_PROGRESS, (progress) => {
-                progressBar.style.display = "inline-block";
-                progressBar.value = progress * 100;
-                status.innerText = `Flashing... ${Math.round(progress * 100)}%`;
-            });
-
-            try {
-                flashBtn.disabled = true;
-                await target.connect();
-                await target.flash(fileBuffer);
-                await target.disconnect();
-
-                status.innerText = "Flash Successful! 🎉";
-                status.classList.remove('file-ready');
-                progressBar.style.display = "none";
-            } catch (err) {
-                status.innerText = "❌ Flash Error: " + err.message;
-                console.error(err);
-            } finally {
-                flashBtn.disabled = false;
-            }
+                    status.innerText = "Flash Successful! 🎉";
+                    status.className = "file-ok";
+                    progressBar.style.display = "none";
+                } catch (err) {
+                    status.innerText = "❌ Error: " + err.message;
+                    console.error(err);
+                } finally {
+                    flashBtn.disabled = false;
+                }
+            };
         });
     </script>
 </body>
